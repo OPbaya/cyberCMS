@@ -12,6 +12,7 @@ public class BestPractice {
 
     private String title;
     private String description;
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -30,6 +31,9 @@ public class BestPractice {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }

@@ -6,135 +6,992 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+    
+        :root {
+            --sidebar-w: 240px;
+            --sidebar-bg: #0f1923;
+            --topbar-h: 52px;
+        }
+    
         body {
-            overflow-x: hidden;
+            font-family: var(--font-sans, sans-serif);
+            background: var(--color-background-tertiary);
+            color: var(--color-text-primary);
         }
-
-        #sidebar {
-            min-width: 250px;
-            max-width: 250px;
-            height: 100vh;
+    
+        .cms-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+    
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
             position: fixed;
-            background: #343a40;
-            color: white;
-            transition: all 0.3s;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform .25s ease;
+            z-index: 100;
         }
-
-        #sidebar.collapsed {
-            margin-left: -250px;
+    
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
-
-        #sidebar a {
-            color: white;
-            display: block;
-            padding: 10px;
+    
+        .sidebar-brand {
+            padding: 20px 18px 16px;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+    
+        .brand-tag {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: #5DCAA5;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+    
+        .brand-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+            margin-top: 2px;
+        }
+    
+        .brand-dot {
+            color: #1D9E75;
+        }
+    
+        .nav-section {
+            padding: 18px 0 0;
+        }
+    
+        .nav-label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            padding: 0 18px 8px;
+            font-weight: 500;
+        }
+    
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 18px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: background .15s, color .15s;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+        }
+    
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+        }
+    
+        .nav-item.active {
+            background: rgba(55, 138, 221, 0.12);
+            color: #85B7EB;
+            border-left-color: #378ADD;
+        }
+    
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 18px;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+    
+        .sidebar-footer p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+    
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            transition: margin .25s ease;
+        }
+    
+        .main.full {
+            margin-left: 0;
+        }
+    
+        .topbar {
+            height: var(--topbar-h);
+            background: var(--color-background-primary);
+            border-bottom: 0.5px solid var(--color-border-tertiary);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+    
+        .toggle-btn {
+            background: none;
+            border: 0.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-md);
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--color-text-primary);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    
+        .toggle-btn:hover {
+            background: var(--color-background-secondary);
+        }
+    
+        .topbar-title {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+        }
+    
+        .topbar-breadcrumb {
+            font-size: 13px;
+            color: var(--color-text-primary);
+            font-weight: 500;
+        }
+    
+        .topbar-spacer {
+            flex: 1;
+        }
+    
+        .topbar-badge {
+            background: var(--color-background-info);
+            color: var(--color-text-info);
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+    
+        .page-body {
+            padding: 24px;
+        }
+    
+        .hero {
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            position: relative;
+            height: 300px;
+            margin-bottom: 28px;
+        }
+    
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity .7s ease;
+        }
+    
+        .hero-slide.active {
+            opacity: 1;
+        }
+    
+        .hero-slide-1 {
+            background: #0f1923;
+            background-image: repeating-linear-gradient(0deg, rgba(55, 138, 221, 0.04) 0px, rgba(55, 138, 221, 0.04) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(55, 138, 221, 0.04) 0px, rgba(55, 138, 221, 0.04) 1px, transparent 1px, transparent 40px);
+        }
+    
+        .hero-slide-2 {
+            background: #0a1628;
+        }
+    
+        .hero-slide-3 {
+            background: #0d1a14;
+        }
+    
+        .hero-slide-4 {
+            background: #1a1208;
+        }
+    
+        .hero-slide-accent {
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            opacity: 0.12;
+        }
+    
+        .accent-blue {
+            background: #378ADD;
+        }
+    
+        .accent-purple {
+            background: #7F77DD;
+        }
+    
+        .accent-teal {
+            background: #1D9E75;
+        }
+    
+        .accent-amber {
+            background: #EF9F27;
+        }
+    
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            z-index: 1;
+        }
+    
+        .hero-content {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 36px 40px;
+        }
+    
+        .hero-tag {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+    
+        .hero-heading {
+            font-size: 30px;
+            font-weight: 500;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+    
+        .hero-sub {
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+    
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    
+        .hero-btn-primary {
+            background: #fff;
+            color: #0C447C;
+            padding: 8px 20px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+    
+        .hero-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            border: 0.5px solid rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+        }
+    
+        .hero-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            gap: 6px;
+        }
+    
+        .hero-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: background .2s, transform .2s;
+        }
+    
+        .hero-dot.active {
+            background: #fff;
+            transform: scale(1.3);
+        }
+    
+        .hero-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 14px;
+        }
+    
+        .hero-arrow {
+            background: rgba(255, 255, 255, 0.1);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .hero-arrow:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    
+        .section-block {
+            margin-bottom: 32px;
+        }
+    
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+    
+        .section-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+    
+        .section-action {
+            font-size: 12px;
+            color: var(--color-text-info);
+            cursor: pointer;
+            padding: 4px 10px;
+            border: 0.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-md);
             text-decoration: none;
         }
-
-        #sidebar a:hover {
-            background: #495057;
+    
+        .section-action:hover {
+            background: var(--color-background-secondary);
         }
-
-        #content {
-            margin-left: 250px;
-            transition: all 0.3s;
+    
+        .bp-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
-
-        #content.full {
-            margin-left: 0;
+    
+        .bp-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--color-background-secondary);
+            padding: 4px;
+            border-radius: var(--border-radius-md);
+        }
+    
+        .bp-tab {
+            padding: 5px 14px;
+            font-size: 12.5px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            transition: background .15s, color .15s;
+            white-space: nowrap;
+        }
+    
+        .bp-tab.active {
+            background: var(--color-background-primary);
+            color: var(--color-text-primary);
+            font-weight: 500;
+            border: 0.5px solid var(--color-border-tertiary);
+        }
+    
+        .bp-tab:hover:not(.active) {
+            color: var(--color-text-primary);
+        }
+    
+        .bp-filter-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+    
+        .bp-pill {
+            padding: 4px 12px;
+            font-size: 11.5px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 0.5px solid var(--color-border-tertiary);
+            background: var(--color-background-primary);
+            color: var(--color-text-secondary);
+            font-family: inherit;
+            transition: all .15s;
+        }
+    
+        .bp-pill.active-pill {
+            border-color: #378ADD;
+            color: #185FA5;
+            background: #E6F1FB;
+        }
+    
+        .bp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+    
+        .bp-card {
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .bp-card.hidden {
+            display: none;
+        }
+    
+        .bp-card-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+            background: var(--color-background-secondary);
+        }
+    
+        .bp-card-img-placeholder {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+    
+        .bp-card-img-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+        }
+    
+        .bp-card-body {
+            padding: 14px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .bp-card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 7px;
+        }
+    
+        .bp-cat-badge {
+            font-size: 10.5px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+    
+        .cat-security {
+            background: #E6F1FB;
+            color: #185FA5;
+        }
+    
+        .cat-compliance {
+            background: #E1F5EE;
+            color: #0F6E56;
+        }
+    
+        .cat-infrastructure {
+            background: #EEEDFE;
+            color: #534AB7;
+        }
+    
+        .cat-privacy {
+            background: #FAEEDA;
+            color: #854F0B;
+        }
+    
+        .bp-card-title {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 6px;
+            line-height: 1.35;
+        }
+    
+        .bp-card-desc {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            line-height: 1.55;
+            flex: 1;
+        }
+    
+        .policy-list {
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+        }
+    
+        .policy-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 18px;
+            border-bottom: 0.5px solid var(--color-border-tertiary);
+            gap: 14px;
+        }
+    
+        .policy-item:last-child {
+            border-bottom: none;
+        }
+    
+        .policy-item:hover {
+            background: var(--color-background-secondary);
+        }
+    
+        .policy-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius-md);
+            background: var(--color-background-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+    
+        .policy-icon-box svg {
+            width: 16px;
+            height: 16px;
+            color: var(--color-text-info);
+        }
+    
+        .policy-text {
+            flex: 1;
+            min-width: 0;
+        }
+    
+        .policy-name {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 3px;
+        }
+    
+        .policy-desc {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+    
+        .policy-badge {
+            font-size: 11px;
+            padding: 2px 9px;
+            border-radius: 12px;
+            background: var(--color-background-success);
+            color: var(--color-text-success);
+            flex-shrink: 0;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+    
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+    
+        .service-card {
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            padding: 18px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+    
+        .service-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--border-radius-md);
+            background: #E6F1FB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+    
+        .service-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 5px;
+        }
+    
+        .service-desc {
+            font-size: 12.5px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+    
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+    
+        .testi-card {
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            padding: 18px;
+        }
+    
+        .testi-quote {
+            font-size: 24px;
+            line-height: 1;
+            margin-bottom: 8px;
+            color: var(--color-text-info);
+            opacity: 0.4;
+        }
+    
+        .testi-msg {
+            font-size: 12.5px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+    
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .testi-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--color-background-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--color-text-info);
+            flex-shrink: 0;
+        }
+    
+        .testi-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+    
+        .testi-role {
+            font-size: 11px;
+            color: var(--color-text-secondary);
         }
     </style>
 </head>
 
 <body>
-
-    <!-- SIDEBAR -->
-    <div id="sidebar">
-        <h4 class="text-center py-3">Admin Panel</h4>
-
-        <a href="/admin/categories">Categories</a>
-        <a href="/admin/best-practices">Best Practices</a>
-        <a href="/admin/policies">Policies</a>
-        <a href="/admin/it-services">IT Services</a>
-        <a href="/admin/testimonials">Testimonials</a>
-    </div>
-
     <!-- MAIN CONTENT -->
-    <div id="content">
-
-        <!-- TOP BAR -->
-        <nav class="navbar navbar-light bg-light shadow-sm">
-            <button class="btn btn-dark" onclick="toggleSidebar()">☰</button>
-            <span class="ms-3">Dashboard</span>
-        </nav>
-
-        <div class="container mt-4">
-
-            <h3 class="mb-4">Overview</h3>
-
-            <!-- BEST PRACTICES -->
-            <div class="mb-5">
-                <h4>Best Practices</h4>
-                <div class="row">
-                    <div class="col-md-4 mb-3" th:each="bp : ${bestPractices}">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h5 th:text="${bp.title}"></h5>
-                                <p th:text="${bp.description}"></p>
-                                <small class="text-muted" th:text="${bp.category.name}"></small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="cms-wrapper">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-tag">Content Management</div>
+                <div class="brand-name">Cyber<span class="brand-dot">.</span>CMS</div>
             </div>
-
-            <!-- POLICIES -->
-            <div class="mb-5">
-                <h4>Policies</h4>
-                <ul class="list-group">
-                    <li class="list-group-item" th:each="p : ${policies}" th:text="${p.title}"></li>
-                </ul>
+            <!-- navbar -->
+            <div class="nav-section">
+                <div class="nav-label">Main</div>
+                <a class="nav-item active" href="/dashboard">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M2 2h5v5H2zm7 0h5v5H9zM2 9h5v5H2zm7 0h5v5H9z" />
+                    </svg>Dashboard
+                </a>
+                <a class="nav-item" href="/admin/categories">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M1 3a1 1 0 011-1h12a1 1 0 010 2H2a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 010 2H2a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 010 2H2a1 1 0 01-1-1z" />
+                    </svg>Categories
+                </a>
+                <a class="nav-item" href="/admin/best-practices">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 1l1.9 4h4.1l-3.3 2.6 1.3 4L8 9l-4 2.6 1.3-4L2 5h4.1z" />
+                    </svg>Best Practices
+                </a>
+                <a class="nav-item" href="/admin/policies">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 1L3 3v5c0 3.3 2.1 6.4 5 7 2.9-.6 5-3.7 5-7V3z" />
+                    </svg>Policies
+                </a>
+                <a class="nav-item" href="/admin/it-services">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M2 3h12a1 1 0 011 1v7a1 1 0 01-1 1H2a1 1 0 01-1-1V4a1 1 0 011-1zm0 2v6h12V5H2zm3 7h6v1H5z" />
+                    </svg>IT Services
+                </a>
+                <a class="nav-item" href="/admin/testimonials">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-1 9V8h2v2zm0-4V4h2v2z" />
+                    </svg>Testimonials
+                </a>
             </div>
-
-            <!-- IT SERVICES -->
-            <div class="mb-5">
-                <h4>IT Services</h4>
-                <div class="row">
-                    <div class="col-md-6 mb-3" th:each="s : ${services}">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 th:text="${s.title}"></h5>
-                                <p th:text="${s.description}"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="sidebar-footer">
+                <p>Cyber CMS v2.0</p>
             </div>
-
-            <!-- TESTIMONIALS -->
-            <div class="mb-5">
-                <h4>Testimonials</h4>
-                <div class="row">
-                    <div class="col-md-4" th:each="t : ${testimonials}">
-                        <div class="card">
-                            <div class="card-body">
-                                <p th:text="${t.message}"></p>
-                                <strong th:text="${t.name}"></strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
+    
+        <div class="main" id="main">
 
+            <!-- topbar -->
+            <div class="topbar">
+                <button class="toggle-btn" onclick="toggleSidebar()">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M1 3h14v1.5H1zm0 5h14v1.5H1zm0 5h14v1.5H1z" />
+                    </svg>Menu
+                </button>
+                <span class="topbar-title">Admin /</span>
+                <span class="topbar-breadcrumb">Dashboard</span>
+                <div class="topbar-spacer"></div>
+                <span class="topbar-badge">Live</span>
+            </div>
+    
+            <div class="page-body">
+    
+                <div class="hero" id="hero">
+                    <div class="hero-slide hero-slide-1 active">
+                        <div class="hero-slide-accent accent-blue"></div>
+                    </div>
+                    <div class="hero-slide hero-slide-2">
+                        <div class="hero-slide-accent accent-purple"></div>
+                    </div>
+                    <div class="hero-slide hero-slide-3">
+                        <div class="hero-slide-accent accent-teal"></div>
+                    </div>
+                    <div class="hero-slide hero-slide-4">
+                        <div class="hero-slide-accent accent-amber"></div>
+                    </div>
+                    <div class="hero-overlay"></div>
+                    <div class="hero-arrows">
+                        <button class="hero-arrow" onclick="changeSlide(-1)">&#8592;</button>
+                        <button class="hero-arrow" onclick="changeSlide(1)">&#8594;</button>
+                    </div>
+                    <div class="hero-content">
+                        <div class="hero-tag" id="hero-tag">Content Management System</div>
+                        <div class="hero-heading" id="hero-heading">Welcome to Cyber CMS</div>
+                        <div class="hero-sub" id="hero-sub">Manage your digital content, policies, and IT services from one
+                            powerful admin panel.</div>
+                        <div class="hero-actions">
+                            <button class="hero-btn-primary">Explore Content</button>
+                            <button class="hero-btn-secondary">View Reports</button>
+                        </div>
+                    </div>
+                    <div class="hero-dots" id="hero-dots">
+                        <div class="hero-dot active" onclick="goSlide(0)"></div>
+                        <div class="hero-dot" onclick="goSlide(1)"></div>
+                        <div class="hero-dot" onclick="goSlide(2)"></div>
+                        <div class="hero-dot" onclick="goSlide(3)"></div>
+                    </div>
+                </div>
+    
+                <div class="section-block">
+                    <div class="section-header">
+                        <div class="section-title">Best Practices</div>
+                        <a class="section-action">Manage all</a>
+                    </div>
+                    <div class="bp-toolbar">
+                        <div class="bp-tabs" id="bp-tabs">
+                            <button class="bp-tab active" onclick="setBpTab(this,'all')">All</button>
+                            <button class="bp-tab" th:each="category : ${categories}"
+                                th:text="${category.name}"
+                                th:onclick="|setBpTab(this,'${category.id}')|">
+                                Category
+                            </button>
+                        </div>
+                        <div class="bp-filter-pills">
+                            <button class="bp-pill active-pill" onclick="togglePill(this)">Recent</button>
+                            <button class="bp-pill" onclick="togglePill(this)">High priority</button>
+                            <button class="bp-pill" onclick="togglePill(this)">Reviewed</button>
+                        </div>
+                    </div>
+                    <div class="bp-grid" id="bp-grid">
+                        <div class="bp-card" th:each="bp : ${bestPractices}"
+                            th:data-cat="${bp.category != null ? bp.category.id : 0}">
+                            <div th:if="${bp.image != null and !bp.image.isEmpty()}" class="bp-card-img-container">
+                                <img th:src="${bp.image}" alt="Best Practice Image" class="bp-card-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                <div class="bp-card-img-placeholder" style="background:#E6F1FB; display:none;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#378ADD"
+                                        stroke-width="1.5">
+                                        <path d="M12 2L4 6v6c0 5.3 3.4 10.3 8 11.5C17.6 22.3 21 17.3 21 12V6z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div th:if="${bp.image == null or bp.image.isEmpty()}" class="bp-card-img-placeholder" style="background:#E6F1FB;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#378ADD"
+                                    stroke-width="1.5">
+                                    <path d="M12 2L4 6v6c0 5.3 3.4 10.3 8 11.5C17.6 22.3 21 17.3 21 12V6z" />
+                                </svg>
+                            </div>
+                            <div class="bp-card-body">
+                                <div class="bp-card-meta">
+                                    <span class="bp-cat-badge"
+                                        th:text="${bp.category != null ? bp.category.name : 'Uncategorized'}">Category</span>
+                                </div>
+                                <div class="bp-card-title" th:text="${bp.title}">Best practice title</div>
+                                <div class="bp-card-desc" th:text="${bp.description}">Best practice description</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="section-block">
+                    <div class="section-header">
+                        <div class="section-title">Policies</div>
+                        <a class="section-action">Manage all</a>
+                    </div>
+                    <div class="policy-list">
+    
+                        <div class="policy-item" th:each="p : ${policies}">
+                            <div class="policy-icon-box">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="1" width="10" height="14" rx="1.5" />
+                                    <path d="M5 5h6M5 8h6M5 11h4" />
+                                </svg>
+                            </div>
+                            <div class="policy-text">
+                                <div class="policy-name" th:text="${p.title}">Acceptable Use Policy</div>
+                                <div class="policy-desc" th:text="${p.description}">Defines acceptable use of company
+                                    systems and digital resources for all employees.</div>
+                            </div>
+                            <div class="policy-badge">Active</div>
+                        </div>
+    
+                    </div>
+                </div>
+    
+                <div class="section-block">
+                    <div class="section-header">
+                        <div class="section-title">IT Services</div>
+                        <a class="section-action">Manage all</a>
+                    </div>
+                    <div class="services-grid">
+                        <div class="service-card" th:each="s : ${services}">
+                            <div class="service-icon-box">&#128187;</div>
+                            <div>
+                                <div class="service-title" th:text="${s.title}">IT Helpdesk</div>
+                                <div class="service-desc" th:text="${s.description}">24/7 support for internal users with
+                                    escalation workflows.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="section-block">
+                    <div class="section-header">
+                        <div class="section-title">Testimonials</div>
+                        <a class="section-action">Manage all</a>
+                    </div>
+                    <div class="testimonials-grid">
+                        <div class="testi-card" th:each="t : ${testimonials}">
+                            <div class="testi-quote">"</div>
+                            <div class="testi-msg" th:text="${t.message}">This platform transformed how our team manages
+                                security policies.</div>
+                            <div class="testi-author">
+                                <div class="testi-avatar" th:text="${#strings.substring(t.name,0,2)}">JD</div>
+                                <div>
+                                    <div class="testi-name" th:text="${t.name}">Jane Doe</div>
+                                    <div class="testi-role" th:text="${t.jobPost}">IT Manager</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
     </div>
 
     <!-- SCRIPT -->
     <script>
+        const slideData = [
+            { tag: "Content Management System", heading: "Welcome to Cyber CMS", sub: "Manage your digital content, policies, and IT services from one powerful admin panel." },
+            { tag: "Best Practices Hub", heading: "Enforce Security Standards", sub: "Curate and publish security best practices across your entire organization effortlessly." },
+            { tag: "Policy Management", heading: "Stay Compliant, Always", sub: "Version-control policies, track reviews, and ensure company-wide adherence." },
+            { tag: "IT Services Portal", heading: "Power Your Infrastructure", sub: "Centralize IT service requests, monitor uptime, and manage cloud resources." }
+        ];
+        let current = 0, timer;
+        function updateHero() {
+            document.querySelectorAll('.hero-slide').forEach((s, i) => s.classList.toggle('active', i === current));
+            document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+            const d = slideData[current];
+            document.getElementById('hero-tag').textContent = d.tag;
+            document.getElementById('hero-heading').textContent = d.heading;
+            document.getElementById('hero-sub').textContent = d.sub;
+        }
+        function changeSlide(dir) { current = (current + dir + 4) % 4; updateHero(); resetTimer(); }
+        function goSlide(i) { current = i; updateHero(); resetTimer(); }
+        function resetTimer() { clearInterval(timer); timer = setInterval(() => changeSlide(1), 4500); }
+        timer = setInterval(() => changeSlide(1), 4500);
+
         function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("collapsed");
-            document.getElementById("content").classList.toggle("full");
+            document.getElementById('sidebar').classList.toggle('hidden');
+            document.getElementById('main').classList.toggle('full');
+        }
+
+        function setBpTab(el, cat) {
+            document.querySelectorAll('.bp-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('#bp-grid .bp-card[data-cat]').forEach(card => {
+                const show = cat === 'all' || card.dataset.cat === cat;
+                card.classList.toggle('hidden', !show);
+            });
+        }
+
+        function togglePill(el) {
+            el.classList.toggle('active-pill');
         }
     </script>
 

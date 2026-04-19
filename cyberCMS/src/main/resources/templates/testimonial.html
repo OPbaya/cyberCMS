@@ -35,6 +35,9 @@
                     <input class="form-control mb-2" name="name" placeholder="Name" th:value="${testimonial.name}"
                         required>
 
+                    <input class="form-control mb-2" name="jobPost" placeholder="Job Post" th:value="${testimonial.jobPost}"
+                        required>
+
                     <input class="form-control mb-2" name="message" placeholder="Message"
                         th:value="${testimonial.message}" required>
 
@@ -53,12 +56,14 @@
                 <table class="table table-bordered">
                     <tr>
                         <th>Name</th>
+                        <th>Job Post</th>
                         <th>Message</th>
                         <th>Actions</th>
                     </tr>
 
                     <tr th:each="t : ${list}">
                         <td th:text="${t.name}"></td>
+                        <td th:text="${t.jobPost}"></td>
                         <td th:text="${t.message}"></td>
                         <td>
                             <a th:href="@{/admin/testimonials/edit/{id}(id=${t.id})}"

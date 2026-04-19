@@ -27,6 +27,7 @@ public class TestimonialController {
     @PostMapping("/admin/testimonials/save")
     public String save(@RequestParam(required = false) Long id,
                        @RequestParam String name,
+                       @RequestParam String jobPost,
                        @RequestParam String message) {
 
         Testimonial t;
@@ -39,6 +40,7 @@ public class TestimonialController {
         }
 
         t.setName(name);
+        t.setJobPost(jobPost);
         t.setMessage(message);
         t.setStatus("ACTIVE");
 

@@ -1,6 +1,7 @@
 package com.cyberCMS.cyberCMS.controller;
 
 import com.cyberCMS.cyberCMS.repository.BestPracticeRepository;
+import com.cyberCMS.cyberCMS.repository.CategoryRepository;
 import com.cyberCMS.cyberCMS.repository.PolicyRepository;
 import com.cyberCMS.cyberCMS.repository.ITServiceRepository;
 import com.cyberCMS.cyberCMS.repository.TestimonialRepository;
@@ -17,6 +18,9 @@ public class DashboardController {
     private BestPracticeRepository bestPracticeRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private PolicyRepository policyRepository;
 
     @Autowired
@@ -29,6 +33,7 @@ public class DashboardController {
     public String dashboard(Model model) {
 
         model.addAttribute("bestPractices", bestPracticeRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("policies", policyRepository.findAll());
         model.addAttribute("services", itServiceRepository.findAll());
         model.addAttribute("testimonials", testimonialRepository.findAll());

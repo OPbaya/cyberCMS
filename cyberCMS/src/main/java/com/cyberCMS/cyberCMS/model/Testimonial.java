@@ -11,6 +11,7 @@ public class Testimonial {
     private Long id;
 
     private String name;
+    private String jobPost;
     private String message;
 
     private String status;
@@ -33,6 +34,14 @@ public class Testimonial {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getJobPost() {
+        return jobPost;
+    }
+
+    public void setJobPost(String jobPost) {
+        this.jobPost = jobPost;
     }
 
     public String getMessage() {

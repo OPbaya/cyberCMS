@@ -7,8 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Controller
 public class BestPracticeController {
@@ -36,6 +42,7 @@ public class BestPracticeController {
             @RequestParam(required = false) Long id,
             @RequestParam String title,
             @RequestParam String description,
+            @RequestParam(required = false) MultipartFile imageFile,
             @RequestParam Long categoryId
     ) {
 
@@ -52,6 +59,27 @@ public class BestPracticeController {
 
         bp.setTitle(title);
         bp.setDescription(description);
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                String originalFilename = imageFile.getOriginalFilename();
+                String extension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+                }
+                String filename = UUID.randomUUID().toString() + extension;
+                Path targetPath = uploadDir.resolve(filename);
+                imageFile.transferTo(targetPath.toFile());
+                bp.setImage("/uploads/" + filename);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save uploaded image", e);
+            }
+        }
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
         bp.setCategory(category);
