@@ -16,6 +16,19 @@
             --sidebar-w: 240px;
             --sidebar-bg: #0f1923;
             --topbar-h: 52px;
+            --color-background-primary: #0f172a;
+            --color-background-secondary: #141f3c;
+            --color-background-tertiary: #081123;
+            --color-border-tertiary: rgba(255, 255, 255, 0.08);
+            --color-text-primary: #e9eef8;
+            --color-text-secondary: #9bb1d1;
+            --color-text-info: #8cc1ff;
+            --color-background-info: rgba(55, 138, 221, 0.14);
+            --color-success: #0f6e56;
+            --color-background-success: rgba(12, 126, 92, 0.12);
+            --border-radius-sm: 10px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
         }
     
         body {
@@ -184,14 +197,64 @@
     
         .page-body {
             padding: 24px;
+            max-width: 1320px;
+            margin: 0 auto;
         }
-    
+
+        .dashboard-summary {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--color-background-primary);
+            border: 1px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 18px 50px rgba(3, 13, 31, 0.12);
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(55, 138, 221, 0.12);
+            color: #61abff;
+            flex-shrink: 0;
+        }
+
+        .summary-content {
+            min-width: 0;
+        }
+
+        .summary-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
         .hero {
             border-radius: var(--border-radius-lg);
             overflow: hidden;
             position: relative;
             height: 300px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
     
         .hero-slide {
@@ -467,7 +530,7 @@
     
         .bp-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 14px;
         }
     
@@ -635,7 +698,7 @@
     
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 14px;
         }
     
@@ -676,7 +739,7 @@
     
         .testimonials-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 14px;
         }
     
@@ -825,8 +888,8 @@
                         <div class="hero-sub" id="hero-sub">Manage your digital content, policies, and IT services from one
                             powerful admin panel.</div>
                         <div class="hero-actions">
-                            <button class="hero-btn-primary">Explore Content</button>
-                            <button class="hero-btn-secondary">View Reports</button>
+                            <a class="hero-btn-primary" href="/admin/best-practices">Manage Best Practices</a>
+                            <a class="hero-btn-secondary" href="/admin/policies">Open Policies</a>
                         </div>
                     </div>
                     <div class="hero-dots" id="hero-dots">
@@ -836,7 +899,45 @@
                         <div class="hero-dot" onclick="goSlide(3)"></div>
                     </div>
                 </div>
-    
+
+                <div class="dashboard-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">📁</div>
+                        <div class="summary-content">
+                            <div class="summary-value" th:text="${categories.size()}">0</div>
+                            <div class="summary-label">Categories</div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">✅</div>
+                        <div class="summary-content">
+                            <div class="summary-value" th:text="${bestPractices.size()}">0</div>
+                            <div class="summary-label">Best Practices</div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">📄</div>
+                        <div class="summary-content">
+                            <div class="summary-value" th:text="${policies.size()}">0</div>
+                            <div class="summary-label">Policies</div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">🛠️</div>
+                        <div class="summary-content">
+                            <div class="summary-value" th:text="${services.size()}">0</div>
+                            <div class="summary-label">IT Services</div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">🗣️</div>
+                        <div class="summary-content">
+                            <div class="summary-value" th:text="${testimonials.size()}">0</div>
+                            <div class="summary-label">Testimonials</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section-block">
                     <div class="section-header">
                         <div class="section-title">Best Practices</div>

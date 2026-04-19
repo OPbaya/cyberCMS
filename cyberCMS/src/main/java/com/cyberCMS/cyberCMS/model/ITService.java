@@ -11,6 +11,7 @@ public class ITService {
     private Long id;
 
     private String title;
+    @Lob
     private String description;
 
     private String status;

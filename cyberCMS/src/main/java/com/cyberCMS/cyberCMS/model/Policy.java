@@ -11,6 +11,7 @@ public class Policy {
     private Long id;
 
     private String title;
+    @Lob
     private String description;
 
     private String status;

@@ -12,6 +12,7 @@ public class Testimonial {
 
     private String name;
     private String jobPost;
+    @Lob
     private String message;
 
     private String status;

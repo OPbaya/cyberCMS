@@ -32,6 +32,20 @@ public class CategoryController {
         return "redirect:/admin/categories";
     }
 
+    @GetMapping("/category/edit/{id}")
+    public String edit(@PathVariable Long id, Model model) {
+        Category category = categoryRepository.findById(id).orElse(new Category());
+        model.addAttribute("category", category);
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "categories";
+    }
+
+    @GetMapping("/category/delete/{id}")
+    public String delete(@PathVariable Long id) {
+        categoryRepository.deleteById(id);
+        return "redirect:/admin/categories";
+    }
+
     @GetMapping("/category/list")
     public String list(Model model) {
         model.addAttribute("categories", categoryRepository.findAll());
